@@ -8,7 +8,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#define ANZAHL_MANNSCHAFTEN 3
+#define ANZAHL_MANNSCHAFTEN 6
 
 typedef uint32_t TEAM_TUPEL;
 
@@ -28,7 +28,7 @@ int ist_team_im_tupel ( int team, TEAM_TUPEL tupel ) {
 
 }
 
-int ist_bereits_gespielt ( tupel ) {
+int ist_bereits_gespielt (TEAM_TUPEL tupel ) {
 
     for ( int i = 0; i < ANZAHL_TUPEL; i++ ) {
         if ( tupel == alle_tupel [i] ) return 1;
@@ -48,8 +48,10 @@ void erzuege_alle_tupel () {
             for ( int k = 0; k < ANZAHL_MANNSCHAFTEN; k++ ) {
                 if ( k == j || k == i ) continue;
                 TEAM_TUPEL t =  erzeuge_tupel ( i, j, k );
-                printf ( "i=%d j=%d k=%d n=%d t=0x%04x\n", i, j, k, n, t );
-                alle_tupel [n++] = t;
+                if(ist_bereits_gespielt( t ) == 0) {
+                    printf ( "i=%d j=%d k=%d n=%d t=0x%04x\n", i, j, k, n, t );
+                    alle_tupel [n++] = t;
+                }
             }
         }
     }
