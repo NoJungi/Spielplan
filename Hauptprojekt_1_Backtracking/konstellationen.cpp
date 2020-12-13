@@ -49,16 +49,16 @@ std::vector<TEAM_KONSTELLATION> erzeuge_alle_konstellationen(int anzahl){
     return alle;
 }
 
-std::vector<int> teams_in_konstellation(const TEAM_KONSTELLATION tk){
+void teams_in_konstellation(const TEAM_KONSTELLATION tk, int* teams){
 
-    std::vector<int> ergebnis;
-    
-    for(int b = 0; b < BITS; b++){ //alle durchghen und in vektor speichern
+    int t = 0;
+
+    for(int b = 0; b < BITS; b++){ //alle durchghen und in teams speichern
         if(ist_team_in_konstellation(b, tk)){
-            ergebnis.push_back(b);
+            teams [t++] = b;
         }
     }
-    return ergebnis;
+
 }
 
 void drucke_konstellation(TEAM_KONSTELLATION t){
@@ -73,10 +73,10 @@ void drucke_konstellation(TEAM_KONSTELLATION t){
     printf ( "}" );
 }
 
-void drucke_vektor(const char* bezeichnung, std::vector<TEAM_KONSTELLATION> v, bool in_einer_zeile){
+void drucke_vektor(const char* bezeichnung, TEAM_KONSTELLATION* v, int laenge, bool in_einer_zeile){
 
-    if(!in_einer_zeile) std::cout << bezeichnung << " anzahl=" << v.size() << std::endl;
-    for ( int i = 0; i < v.size(); i++ ) {
+    if(!in_einer_zeile) std::cout << bezeichnung << " anzahl=" << laenge << std::endl;
+    for ( int i = 0; i < laenge; i++ ) {
         drucke_konstellation(v[i]);
         if(!in_einer_zeile) std::cout << std::endl;
     }
