@@ -14,12 +14,12 @@ TEAM_KONSTELLATION erzeuge_konstellation(int team1, int team2, int team3){
     return(TEAM_KONSTELLATION) 0 | (1 << team1) | (1 << team2) | (1 << team3);  //Leftshift im 32 bit Integer mittels bitweisem oder verknuepft
 }
 
-bool ist_team_in_konstellation(const int &team, const TEAM_KONSTELLATION &t){
+bool ist_team_in_konstellation(const int team, const TEAM_KONSTELLATION t){
 
     return t & (1 << team);  // Bitweises und
 }
 
-bool ist_konstellation_in_vektor(const TEAM_KONSTELLATION &t, const std::vector<TEAM_KONSTELLATION> &v){
+bool ist_konstellation_in_vektor(const TEAM_KONSTELLATION t, const std::vector<TEAM_KONSTELLATION> v){
 
     for(int i = 0; i < v.size(); i++){
         if(t == v[i]) return true;
@@ -49,7 +49,7 @@ std::vector<TEAM_KONSTELLATION> erzeuge_alle_konstellationen(int anzahl){
     return alle;
 }
 
-std::vector<int> teams_in_konstellation(const TEAM_KONSTELLATION &tk){
+std::vector<int> teams_in_konstellation(const TEAM_KONSTELLATION tk){
 
     std::vector<int> ergebnis;
     

@@ -14,37 +14,20 @@ bool vollstaendig(const int& anzahl_m, const std::vector<TEAM_KONSTELLATION> &pl
     return plan.size() == (anzahl_m * (anzahl_m - 1) / 3);
 }
 
-bool spielanzahl_erreicht(const TEAM_KONSTELLATION &tk, int sta[BITS][BITS], const int &tiefe, const int &anzahl_m){
+bool spielanzahl_erreicht(const TEAM_KONSTELLATION tk, int sta[BITS][BITS], const int anzahl_m){
     std::vector<int> teams = teams_in_konstellation(tk);
 
     if(DEBUG) std::cout << "Statistik: " << sta[teams[0]][teams[1]] << " " << sta[teams[0]][teams[2]] << " " << sta[teams[1]][teams[2]] << std::endl;
     if(DEBUG) std::cout << "Statistik: " << sta[teams[1]][teams[0]] << " " << sta[teams[2]][teams[0]] << " " << sta[teams[2]][teams[1]] << std::endl;
     //std::cout << teams[0] << " " << teams[1] << " " << teams[2] << std::endl;
-    /*if(tiefe == 0) return false;                                      //Ich hatte was zur Laufzeitoptimierung ausprobiert,... war nicht so gut
-    else if(tiefe < ((anzahl_m * (anzahl_m - 1) / 3) -2)){
-        return  
-        (sta[teams[0]][teams[1]] > 1 ||  
-        sta[teams[0]][teams[2]] > 1 ||  //Abfrage der Statistik
-        sta[teams[1]][teams[2]] > 1) ||
-        (sta[teams[0]][teams[1]] == 0 &&  
-        sta[teams[0]][teams[2]] == 0 &&  //Abfrage der Statistik
-        sta[teams[1]][teams[2]] == 0) ||
-        (sta[teams[0]][teams[1]] == 1 &&  
-        sta[teams[0]][teams[2]] == 1 &&  //Abfrage der Statistik
-        sta[teams[1]][teams[2]] == 1); 
-    }
-    else {*/
-        return  
-            sta[teams[0]][teams[1]] > 1 ||  
-            sta[teams[0]][teams[2]] > 1 ||  //Abfrage der Statistik
-            sta[teams[1]][teams[2]] > 1; //|| 
-            //sta[teams[1]][teams[0]] > 1 ||
-            //sta[teams[2]][teams[0]] > 1 || 
-            //sta[teams[2]][teams[1]] > 1;
-    //}
+
+    return  
+        sta[teams[0]][teams[1]] > 1 ||  
+        sta[teams[0]][teams[2]] > 1 ||
+        sta[teams[1]][teams[2]] > 1;
 }
 
-void aktualisiere_statistik(int sta[BITS][BITS], const TEAM_KONSTELLATION &tk, const int &zaehler){  //zaehler: fuers addieren oder subtrahieren von der Statistik
+void aktualisiere_statistik(int sta[BITS][BITS], const TEAM_KONSTELLATION tk, const int zaehler){  //zaehler: fuers addieren oder subtrahieren von der Statistik
     if(abs(zaehler) != 1){
         std::cout << "\nBOESER FEHLER, zaehler falsch z=" << zaehler << std::endl;
         exit(102);
@@ -54,13 +37,10 @@ void aktualisiere_statistik(int sta[BITS][BITS], const TEAM_KONSTELLATION &tk, c
     sta[teams[0]][teams[1]] += zaehler;
     sta[teams[0]][teams[2]] += zaehler;  
     sta[teams[1]][teams[2]] += zaehler;
-    //sta[teams[1]][teams[0]] += zaehler;//koennte man auch nur mit den ertsen drei machen, aber hier jetzt die Matrix symmetrisch ausgefuellt
-    //sta[teams[2]][teams[0]] += zaehler;
-    //sta[teams[2]][teams[1]] += zaehler;
 }
 
 
-bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &alle, std::vector<TEAM_KONSTELLATION> &plan, int sta[BITS][BITS], const int index){
+bool erzeuge_spielplan(const int anzahl_m, std::vector<TEAM_KONSTELLATION> alle, std::vector<TEAM_KONSTELLATION> &plan, int sta[BITS][BITS], const int start_index){
     
     if(DEBUG) std::cout << "[" << plan.size() << "] ";
 
@@ -70,7 +50,7 @@ bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &all
     }
 
 
-    for(int i = index; i < alle.size(); i++){       //alle Konstellationen durchgehen
+    for(int i = start_index; i < alle.size(); i++){       //alle Konstellationen durchgehen
     /*
         if(ist_konstellation_in_vektor(alle[i], plan)){  //nur benutzen, falls noch nicht im plan
             if(DEBUG) std::cout << "i=" << i << " doppelt k=";
@@ -84,15 +64,13 @@ bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &all
             if(DEBUG) drucke_konstellation(tk);
             if(DEBUG) std::cout << std::endl;
 
-            if(spielanzahl_erreicht(tk, sta, plan.size(), anzahl_m)){ //testen der Statistik an allen stellen dieser teams < 2
+            if(spielanzahl_erreicht(tk, sta, anzahl_m)){ //testen der Statistik an allen stellen dieser teams < 2
                 if(DEBUG) std::cout << " spielanzahl erreicht" << std::endl;
             }
             else{
                 aktualisiere_statistik(sta, tk, +1);
                 plan.push_back(tk);
-                std::cout << "[" << plan.size() << "] ";
-                drucke_vektor("", plan, true);
-                std::cout << std::endl;
+                //std::cout << "[" << plan.size() << "] "; drucke_vektor("", plan, true); std::cout << std::endl;
                 if(DEBUG) drucke_vektor("Plan", plan, false);
 
                 if(erzeuge_spielplan(anzahl_m, alle, plan, sta, i + 1)){ //rekursiver aufruf
