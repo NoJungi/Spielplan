@@ -52,37 +52,32 @@ void aktualisiere_statistik(int sta[BITS][BITS], const TEAM_KONSTELLATION &tk, c
     std::vector<int> teams = teams_in_konstellation(tk);
     if(DEBUG) std::cout << "l=" << teams.size() << " " << teams[0] << " " << teams[1] << " " << teams[2] << std::endl;
     sta[teams[0]][teams[1]] += zaehler;
-    sta[teams[0]][teams[2]] += zaehler;  //koennte man auch nur mit den ertsen drei machen, aber hier jetzt die Matrix symmetrisch ausgefuellt
+    sta[teams[0]][teams[2]] += zaehler;  
     sta[teams[1]][teams[2]] += zaehler;
-    //sta[teams[1]][teams[0]] += zaehler;
+    //sta[teams[1]][teams[0]] += zaehler;//koennte man auch nur mit den ertsen drei machen, aber hier jetzt die Matrix symmetrisch ausgefuellt
     //sta[teams[2]][teams[0]] += zaehler;
     //sta[teams[2]][teams[1]] += zaehler;
 }
 
 
-bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &alle, std::vector<TEAM_KONSTELLATION> &plan, int sta[BITS][BITS], const int &index){
+bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &alle, std::vector<TEAM_KONSTELLATION> &plan, int sta[BITS][BITS], const int index){
     
     if(DEBUG) std::cout << "[" << plan.size() << "] ";
+
     if(vollstaendig(anzahl_m, plan)){                       //Abbruch, falls gueltiger Plan gefunden
         if(DEBUG) std::cout << "VOLLSTAENDIG" << std::endl;
         return true;
     }
-    
 
-    /*
-    if(plan.size() > (anzahl_m * (anzahl_m - 1) / 3)){    //Nur zur sicherheit
-        std::cout << "\nBOESER FEHLER, plan groesse zu gross = " << plan.size() << std::endl;
-        exit(101);
-    }
-    */
 
     for(int i = index; i < alle.size(); i++){       //alle Konstellationen durchgehen
+    /*
         if(ist_konstellation_in_vektor(alle[i], plan)){  //nur benutzen, falls noch nicht im plan
             if(DEBUG) std::cout << "i=" << i << " doppelt k=";
             if(DEBUG) drucke_konstellation(alle[i]);
             if(DEBUG) std::cout << std::endl;
         }
-        else{
+        else{ */
             TEAM_KONSTELLATION tk = alle[i];
 
             if(DEBUG) std::cout << "i=" << i << " KANDIDAT k=";
@@ -95,10 +90,14 @@ bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &all
             else{
                 aktualisiere_statistik(sta, tk, +1);
                 plan.push_back(tk);
-                if(DEBUG) drucke_vektor("Plan", plan);
+                std::cout << "[" << plan.size() << "] ";
+                drucke_vektor("", plan, true);
+                std::cout << std::endl;
+                if(DEBUG) drucke_vektor("Plan", plan, false);
 
                 if(erzeuge_spielplan(anzahl_m, alle, plan, sta, i + 1)){ //rekursiver aufruf
-                 return true;  //hochreichen des gueltigen plans
+                    return true;  //hochreichen des gueltigen plans
+                    
                 }
                 else{
                         aktualisiere_statistik(sta, tk, -1);
@@ -109,12 +108,12 @@ bool erzeuge_spielplan(const int &anzahl_m, std::vector<TEAM_KONSTELLATION> &all
                         if(DEBUG) std::cout << "[" << plan.size() << "] ";
                 }
             }
-        }
+        //}
        
     }
 
     
-    return false; //Falls keine Loesung hierfuer, dann Rueckgabe leeren vektor
+    return false; //Falls keine Loesung gefunden wurde
 }
 
 //Alle funktionen in richtiger Reihenfolge ausfuehren und zeit stoppen
@@ -142,11 +141,11 @@ int spielplan(int anzahl_m){
         alle_konstellationen.erase(alle_konstellationen.begin() + (random));
     } */
   
-    drucke_vektor("Konstellationen", alle_konstellationen);
+    drucke_vektor("Konstellationen", alle_konstellationen, false);
     if(DEBUG) std::cout << "--------------------------------------------" << std::endl;
 
     if(erzeuge_spielplan(anzahl_m, alle_konstellationen, spielplan, statistik, 0)){
-        drucke_vektor("Spielplan", spielplan);
+        drucke_vektor("Spielplan", spielplan, false);
     }
     else{
         std::cout << "Es gibt keine gueltige Loesung" << std::endl;

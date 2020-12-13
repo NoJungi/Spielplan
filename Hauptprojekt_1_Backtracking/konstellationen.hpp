@@ -28,6 +28,7 @@ std::vector<TEAM_KONSTELLATION> erzeuge_alle_konstellationen(int anzahl); //erze
 std::vector<int> teams_in_konstellation(const TEAM_KONSTELLATION &tk); //gibt teams als int aus TEAM_KONSTELLATION wieder
 
 void drucke_konstellation(TEAM_KONSTELLATION t); // Gibt aus, welche Teams sich treffen
-void drucke_vektor(const char* bezeichnung, std::vector<TEAM_KONSTELLATION> v); // Gibt alle Konstellationen aus Vektoer wieder
+void drucke_vektor(const char* bezeichnung, std::vector<TEAM_KONSTELLATION> v, bool in_einer_zeile); // Gibt alle Konstellationen aus Vektoer wieder
+
 
 #endif //__KONSTELLATIONEN_HEADER_

@@ -66,18 +66,19 @@ void drucke_konstellation(TEAM_KONSTELLATION t){
     char trenner = '{';
     for(int b = 0; b < BITS; b++){
         if(ist_team_in_konstellation(b, t)){
-            printf("%c%d", trenner, b);
+            std::cout << trenner << b;
             trenner = ',';
         }
     }
     printf ( "}" );
 }
 
-void drucke_vektor(const char* bezeichnung, std::vector<TEAM_KONSTELLATION> v){
+void drucke_vektor(const char* bezeichnung, std::vector<TEAM_KONSTELLATION> v, bool in_einer_zeile){
 
-    std::cout << bezeichnung << " anzahl=" << v.size() << std::endl;
+    if(!in_einer_zeile) std::cout << bezeichnung << " anzahl=" << v.size() << std::endl;
     for ( int i = 0; i < v.size(); i++ ) {
         drucke_konstellation(v[i]);
-        std::cout << std::endl;
+        if(!in_einer_zeile) std::cout << std::endl;
     }
+    if(!in_einer_zeile) std::cout << std::endl;
 }
