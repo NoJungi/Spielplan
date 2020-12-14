@@ -51,7 +51,19 @@ void aktualisiere_statistik(int sta[BITS][BITS], const TEAM_KONSTELLATION tk, co
     sta[teams[1]][teams[2]] += zaehler;
 }
 
-bool erzeuge_spielplan(const int anzahl_m, std::vector<TEAM_KONSTELLATION> alle, TEAM_KONSTELLATION* plan, int sta[BITS][BITS], const int start_index){
+int ermittle_min_team ( TEAM_KONSTELLATION tk ) {
+
+    for(int b = 0; b < BITS; b++){
+        if(ist_team_in_konstellation(b, tk)){
+            return b;
+        }
+    }
+
+    return -1;
+
+}
+
+bool erzeuge_spielplan(const int anzahl_m, std::vector<TEAM_KONSTELLATION> alle, TEAM_KONSTELLATION* plan, int sta[BITS][BITS], const int start_index, int last_min_team ){
     
     if(DEBUG) std::cout << "[" << next << "] ";
 
@@ -61,11 +73,32 @@ bool erzeuge_spielplan(const int anzahl_m, std::vector<TEAM_KONSTELLATION> alle,
     }
 
     for(int i = start_index; i < alle.size(); i++){       //alle Konstellationen durchgehen
+
         TEAM_KONSTELLATION tk = alle[i];
+
+        // wenn der index in der ersten Stelle wechselt
 
         if(DEBUG) std::cout << "i=" << i << " KANDIDAT k=";
         if(DEBUG) drucke_konstellation(tk);
         if(DEBUG) std::cout << std::endl;
+
+        int min_team = ermittle_min_team ( tk );
+        if ( last_min_team != min_team ) {
+            // std::cout << "[" << next << "] i=" << i << " lmt=" << last_min_team << " mt=" << min_team << " "; 
+            // drucke_konstellation(tk);
+            // std::cout << std::endl;
+            // drucke_statistik ( anzahl_m, sta );
+
+            for(int j = last_min_team + 1; j < anzahl_m; j++){
+                if ( sta [last_min_team][j] < 2){
+                    // std::cout << "<<<" << std::endl;
+                    return false;
+                }
+            }
+
+            last_min_team = min_team;
+
+        }
 
         if(spielanzahl_erreicht(tk, sta)){ //testen der Statistik an allen stellen dieser teams < 2
             if(DEBUG) std::cout << " spielanzahl erreicht" << std::endl;
@@ -78,7 +111,7 @@ bool erzeuge_spielplan(const int anzahl_m, std::vector<TEAM_KONSTELLATION> alle,
             if(DEBUG) { std::cout << "-->[" << next << "] "; drucke_vektor("", plan, next, true); std::cout << std::endl; }
             //if(DEBUG) drucke_vektor("Plan", plan, next, false);
 
-            if(erzeuge_spielplan(anzahl_m, alle, plan, sta, i + 1)){ //rekursiver aufruf
+            if(erzeuge_spielplan(anzahl_m, alle, plan, sta, i + 1, last_min_team)){ //rekursiver aufruf
                 return true;  //hochreichen des gueltigen plans
             }
             else{
@@ -124,7 +157,7 @@ int spielplan(int anzahl_m){
     drucke_vektor("Konstellationen", alle_konstellationen.data(), alle_konstellationen.size(), false);
     if(DEBUG) std::cout << "--------------------------------------------" << std::endl;
 
-    if(erzeuge_spielplan(anzahl_m, alle_konstellationen, spielplan, statistik, 0)){
+    if(erzeuge_spielplan(anzahl_m, alle_konstellationen, spielplan, statistik, 0, 0)){
         drucke_vektor("Spielplan", spielplan, anzahl_spiele, false);
     }
     else{

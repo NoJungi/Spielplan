@@ -36,12 +36,7 @@ std::vector<TEAM_KONSTELLATION> erzeuge_alle_konstellationen(int anzahl){
         for(int j = i+1; j < anzahl; j++){
             for(int k = j+1; k < anzahl; k++){
                 TEAM_KONSTELLATION t =  erzeuge_konstellation(i, j, k);
-                if(ist_konstellation_in_vektor(t, alle) == 0){
-                    alle.push_back(t);
-                    //std::cout << std::endl << "Erzeuge Tupel: \t" << ++n << "\t" << std::endl;
-                    //drucke_konstellation(t);
-                    //n++;
-                }
+                alle.push_back(t);
             }
         }
     }
